@@ -54,6 +54,11 @@ public class GenericSteps {
         CompletableFuture<Object> apply(Object a, Object b, Object c, Object d);
     }
 
+    @FunctionalInterface
+    public interface FiveArgFunction {
+        CompletableFuture<Object> apply(Object a, Object b, Object c, Object d, Object e);
+    }
+
     // ========== Method Invocation (Object.method) Steps ==========
 
     @When("I call {string} with {string}")
@@ -115,6 +120,20 @@ public class GenericSteps {
         }
     }
 
+    @When("I call {string} with {string} using arguments {string}, {string}, {string}, {string}, and {string}")
+    public void iCallWithFiveArguments(String field, String fnName, String param1, String param2, String param3, String param4, String param5) {
+        try {
+            Object object = handleResolve(field, world);
+            Object result = invokeMethod(object, fnName,
+                    handleResolve(param1, world), handleResolve(param2, world),
+                    handleResolve(param3, world), handleResolve(param4, world),
+                    handleResolve(param5, world));
+            world.set("result", result);
+        } catch (Exception error) {
+            world.set("result", error);
+        }
+    }
+
     @When("I call {string} with {string} as {string}")
     public void startMethodJob(String field, String fnName, String jobName) {
         startMethodJobWithArgs(field, fnName, jobName);
@@ -141,6 +160,14 @@ public class GenericSteps {
         startMethodJobWithArgs(field, fnName, jobName,
                 handleResolve(param1, world), handleResolve(param2, world),
                 handleResolve(param3, world), handleResolve(param4, world));
+    }
+
+    @When("I call {string} with {string} using arguments {string}, {string}, {string}, {string}, and {string} as {string}")
+    public void startMethodJobWithFiveArguments(String field, String fnName, String param1, String param2, String param3, String param4, String param5, String jobName) {
+        startMethodJobWithArgs(field, fnName, jobName,
+                handleResolve(param1, world), handleResolve(param2, world),
+                handleResolve(param3, world), handleResolve(param4, world),
+                handleResolve(param5, world));
     }
 
     private void startMethodJobWithArgs(String field, String fnName, String jobName, Object... args) {
@@ -210,6 +237,20 @@ public class GenericSteps {
             Object result = callFunctionalWithArgs(fn,
                     handleResolve(param1, world), handleResolve(param2, world), 
                     handleResolve(param3, world), handleResolve(param4, world));
+            world.set("result", result);
+        } catch (Exception error) {
+            world.set("result", error);
+        }
+    }
+
+    @When("I call {string} using arguments {string}, {string}, {string}, {string}, and {string}")
+    public void iCallFunctionWithFiveArguments(String fnName, String param1, String param2, String param3, String param4, String param5) {
+        try {
+            Object fn = handleResolve(fnName, world);
+            Object result = callFunctionalWithArgs(fn,
+                    handleResolve(param1, world), handleResolve(param2, world),
+                    handleResolve(param3, world), handleResolve(param4, world),
+                    handleResolve(param5, world));
             world.set("result", result);
         } catch (Exception error) {
             world.set("result", error);
@@ -483,6 +524,24 @@ public class GenericSteps {
         jobs.put(jobName, future);
     }
 
+    @When("I start {string} using arguments {string}, {string}, {string}, {string}, and {string} as {string}")
+    public void startJobWithFiveArguments(String fnName, String param1, String param2, String param3, String param4, String param5, String jobName) {
+        Object p1 = handleResolve(param1, world);
+        Object p2 = handleResolve(param2, world);
+        Object p3 = handleResolve(param3, world);
+        Object p4 = handleResolve(param4, world);
+        Object p5 = handleResolve(param5, world);
+        CompletableFuture<Object> future = CompletableFuture.supplyAsync(() -> {
+            try {
+                Object fn = handleResolve(fnName, world);
+                return callFunctionalWithArgs(fn, p1, p2, p3, p4, p5);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        jobs.put(jobName, future);
+    }
+
     @Then("I wait for job {string}")
     public void waitForJob(String jobName) {
         try {
@@ -579,6 +638,20 @@ public class GenericSteps {
             Object result = callFunctionalWithArgs(fn, 
                     handleResolve(param1, world), handleResolve(param2, world), 
                     handleResolve(param3, world), handleResolve(param4, world));
+            world.set("result", result);
+        } catch (Exception e) {
+            world.set("result", e);
+        }
+    }
+
+    @When("I wait for {string} using arguments {string}, {string}, {string}, {string}, and {string}")
+    public void iWaitForWithFiveArguments(String fnName, String param1, String param2, String param3, String param4, String param5) {
+        try {
+            Object fn = handleResolve(fnName, world);
+            Object result = callFunctionalWithArgs(fn,
+                    handleResolve(param1, world), handleResolve(param2, world),
+                    handleResolve(param3, world), handleResolve(param4, world),
+                    handleResolve(param5, world));
             world.set("result", result);
         } catch (Exception e) {
             world.set("result", e);

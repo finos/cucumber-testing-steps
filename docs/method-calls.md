@@ -48,6 +48,10 @@ When I call "{format}" using arguments "{template}", "{name}", and "{value}"
 
 ---
 
+## `I call "{fn}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}"` — five arguments
+
+---
+
 ## `I call "{obj}" with "{method}"` — call an object method
 
 Resolves `{obj}` to an object in props, then calls the named method on it.
@@ -81,6 +85,10 @@ Then "{result}" is "12"
 ---
 
 ## `I call "{obj}" with "{method}" using arguments "{p1}", "{p2}", "{p3}", and "{p4}"` — method with four arguments
+
+---
+
+## `I call "{obj}" with "{method}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}"` — method with five arguments
 
 ---
 

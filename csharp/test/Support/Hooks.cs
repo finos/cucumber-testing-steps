@@ -41,6 +41,8 @@ public class Hooks
             Task.FromResult<object?>($"{a}{b}{c}")));
         _world.Set("fourArgConcatFn", (Func<object?, object?, object?, object?, Task<object?>>)((a, b, c, d) => 
             Task.FromResult<object?>($"{a}{b}{c}{d}")));
+        _world.Set("fiveArgConcatFn", (Func<object?, object?, object?, object?, object?, Task<object?>>)((a, b, c, d, e) => 
+            Task.FromResult<object?>($"{a}{b}{c}{d}{e}")));
 
         // Error throwing functions
         _world.Set("errorThrowingFn", (Func<Task<object?>>)(() =>
@@ -52,6 +54,8 @@ public class Hooks
         _world.Set("errorWith3ArgsFn", (Func<object?, object?, object?, Task<object?>>)((a, b, c) =>
             throw new InvalidOperationException("Test error message")));
         _world.Set("errorWith4ArgsFn", (Func<object?, object?, object?, object?, Task<object?>>)((a, b, c, d) =>
+            throw new InvalidOperationException("Test error message")));
+        _world.Set("errorWith5ArgsFn", (Func<object?, object?, object?, object?, object?, Task<object?>>)((a, b, c, d, e) =>
             throw new InvalidOperationException("Test error message")));
 
         // Test calculator
@@ -159,5 +163,6 @@ public class Hooks
         public int Multiply(int a, int b) => a * b;
         public int Sum3(int a, int b, int c) => a + b + c;
         public int Sum4(int a, int b, int c, int d) => a + b + c + d;
+        public int Sum5(int a, int b, int c, int d, int e) => a + b + c + d + e;
     }
 }

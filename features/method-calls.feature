@@ -39,6 +39,11 @@ Feature: Method and function invocation
     Given I set "fourArgFn" to "{fourArgConcatFn}"
     When I call "{fourArgFn}" using arguments "1", "2", "3", and "4"
     Then "{result}" is "1234"
+
+  Scenario: Call function with five arguments
+    Given I set "fiveArgFn" to "{fiveArgConcatFn}"
+    When I call "{fiveArgFn}" using arguments "1", "2", "3", "4", and "5"
+    Then "{result}" is "12345"
   # Object method calls
 
   Scenario: Call method on an object with no arguments
@@ -65,6 +70,11 @@ Feature: Method and function invocation
     Given I set "calculator" to "{testCalculator}"
     When I call "{calculator}" with "Sum4" using arguments "{1}", "{2}", "{3}", and "{4}"
     Then "{result}" is "10"
+
+  Scenario: Call object method with five arguments
+    Given I set "calculator" to "{testCalculator}"
+    When I call "{calculator}" with "Sum5" using arguments "{1}", "{2}", "{3}", "{4}", and "{5}"
+    Then "{result}" is "15"
   # Invocation counter setup
 
   Scenario: Create an invocation counter starts at zero

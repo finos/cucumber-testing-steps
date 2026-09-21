@@ -10,6 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.finos.cucumbertestingsteps.steps.GenericSteps.FiveArgFunction;
 import org.finos.cucumbertestingsteps.steps.GenericSteps.FourArgFunction;
 import org.finos.cucumbertestingsteps.steps.GenericSteps.ThreeArgFunction;
 import org.finos.cucumbertestingsteps.support.MatchingUtils;
@@ -55,6 +56,9 @@ public class TestHooks {
             (a, b, c) -> CompletableFuture.completedFuture(String.valueOf(a) + String.valueOf(b) + String.valueOf(c)));
         world.set("fourArgConcatFn", (FourArgFunction)
             (a, b, c, d) -> CompletableFuture.completedFuture(String.valueOf(a) + String.valueOf(b) + String.valueOf(c) + String.valueOf(d)));
+        world.set("fiveArgConcatFn", (FiveArgFunction)
+            (a, b, c, d, e) -> CompletableFuture.completedFuture(
+                String.valueOf(a) + String.valueOf(b) + String.valueOf(c) + String.valueOf(d) + String.valueOf(e)));
 
         world.set("errorThrowingFn", (Supplier<CompletableFuture<Object>>) () -> {
             throw new RuntimeException("Test error message");
@@ -67,6 +71,8 @@ public class TestHooks {
             (a, b, c) -> { throw new RuntimeException("Test error message"); });
         world.set("errorWith4ArgsFn", (FourArgFunction)
             (a, b, c, d) -> { throw new RuntimeException("Test error message"); });
+        world.set("errorWith5ArgsFn", (FiveArgFunction)
+            (a, b, c, d, e) -> { throw new RuntimeException("Test error message"); });
 
         world.set("testCalculator", new TestCalculator());
 
@@ -188,6 +194,7 @@ public class TestHooks {
         public int Multiply(Number a, Number b) { return a.intValue() * b.intValue(); }
         public int Sum3(Number a, Number b, Number c) { return a.intValue() + b.intValue() + c.intValue(); }
         public int Sum4(Number a, Number b, Number c, Number d) { return a.intValue() + b.intValue() + c.intValue() + d.intValue(); }
+        public int Sum5(Number a, Number b, Number c, Number d, Number e) { return a.intValue() + b.intValue() + c.intValue() + d.intValue() + e.intValue(); }
         public String Describe(Object o) { return "object:" + o; }
         public String Describe(Number n) { return "number:" + n; }
         public String Describe(Integer i) { return "integer:" + i; }

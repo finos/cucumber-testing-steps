@@ -57,6 +57,11 @@ Feature: Error handling
     Given I set "errorFn" to "{errorWith4ArgsFn}"
     When I wait for "{errorFn}" using arguments "a", "b", "c", and "d"
     Then "{result}" is an error
+
+  Scenario: Wait for function with five arguments that throws error
+    Given I set "errorFn" to "{errorWith5ArgsFn}"
+    When I wait for "{errorFn}" using arguments "a", "b", "c", "d", and "e"
+    Then "{result}" is an error
   # Call functions with args that throw
 
   Scenario: Call function with argument that throws error
@@ -77,4 +82,9 @@ Feature: Error handling
   Scenario: Call function with four arguments that throws error
     Given I set "errorFn" to "{errorWith4ArgsFn}"
     When I call "{errorFn}" using arguments "a", "b", "c", and "d"
+    Then "{result}" is an error
+
+  Scenario: Call function with five arguments that throws error
+    Given I set "errorFn" to "{errorWith5ArgsFn}"
+    When I call "{errorFn}" using arguments "a", "b", "c", "d", and "e"
     Then "{result}" is an error
