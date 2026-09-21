@@ -525,6 +525,27 @@ func (pw *PropsWorld) iCallObjectWithMethodWithFourParameters(field, fnName, par
 	return nil
 }
 
+func (pw *PropsWorld) iCallObjectWithMethodWithFiveParameters(field, fnName, param1, param2, param3, param4, param5 string) error {
+	obj := pw.HandleResolve(field)
+	objValue := reflect.ValueOf(obj)
+	method := objValue.MethodByName(fnName)
+	if !method.IsValid() {
+		pw.Props["result"] = fmt.Errorf("method %s not found", fnName)
+		return nil
+	}
+	defer pw.recoverFromMethodCallPanic(field, fnName, param1, param2, param3, param4, param5)
+	args := convertArgs(method, []interface{}{
+		pw.HandleResolve(param1),
+		pw.HandleResolve(param2),
+		pw.HandleResolve(param3),
+		pw.HandleResolve(param4),
+		pw.HandleResolve(param5),
+	})
+	results := method.Call(args)
+	pw.handleMethodResultsSync(results)
+	return nil
+}
+
 func (pw *PropsWorld) invokeMethodResult(field, fnName string, paramStrings ...string) (interface{}, error) {
 	obj := pw.HandleResolve(field)
 	objValue := reflect.ValueOf(obj)
@@ -576,6 +597,10 @@ func (pw *PropsWorld) iStartMethodJobWithFourParameters(field, fnName, param1, p
 	return pw.iStartMethodJob(field, fnName, jobName, param1, param2, param3, param4)
 }
 
+func (pw *PropsWorld) iStartMethodJobWithFiveParameters(field, fnName, param1, param2, param3, param4, param5, jobName string) error {
+	return pw.iStartMethodJob(field, fnName, jobName, param1, param2, param3, param4, param5)
+}
+
 func (pw *PropsWorld) iCallFunctionWithParameter(fnName, param string) error {
 	pw.callFunction(pw.HandleResolve(fnName), pw.HandleResolve(param))
 	return nil
@@ -593,6 +618,11 @@ func (pw *PropsWorld) iCallFunctionWithThreeParameters(fnName, param1, param2, p
 
 func (pw *PropsWorld) iCallFunctionWithFourParameters(fnName, param1, param2, param3, param4 string) error {
 	pw.callFunction(pw.HandleResolve(fnName), pw.HandleResolve(param1), pw.HandleResolve(param2), pw.HandleResolve(param3), pw.HandleResolve(param4))
+	return nil
+}
+
+func (pw *PropsWorld) iCallFunctionWithFiveParameters(fnName, param1, param2, param3, param4, param5 string) error {
+	pw.callFunction(pw.HandleResolve(fnName), pw.HandleResolve(param1), pw.HandleResolve(param2), pw.HandleResolve(param3), pw.HandleResolve(param4), pw.HandleResolve(param5))
 	return nil
 }
 
@@ -965,6 +995,14 @@ func (pw *PropsWorld) iWaitForFunctionWithFourParameters(functionName, param1, p
 	return pw.iWaitForJob(jobName)
 }
 
+func (pw *PropsWorld) iWaitForFunctionWithFiveParameters(functionName, param1, param2, param3, param4, param5 string) error {
+	jobName := "temp_" + functionName
+	if err := pw.iStartJobWithFiveParameters(functionName, param1, param2, param3, param4, param5, jobName); err != nil {
+		return err
+	}
+	return pw.iWaitForJob(jobName)
+}
+
 func (pw *PropsWorld) iStartJob(functionName, jobName string) error {
 	pw.AsyncManager.StartTask(jobName, func(ctx context.Context) (interface{}, error) {
 		funcValue := pw.HandleResolve(functionName)
@@ -1075,6 +1113,36 @@ func (pw *PropsWorld) iStartJobWithFourParameters(functionName, param1, param2, 
 	return nil
 }
 
+func (pw *PropsWorld) iStartJobWithFiveParameters(functionName, param1, param2, param3, param4, param5, jobName string) error {
+	pw.AsyncManager.StartTask(jobName, func(ctx context.Context) (interface{}, error) {
+		funcValue := pw.HandleResolve(functionName)
+		if funcValue == nil {
+			return nil, fmt.Errorf("function %s not found", functionName)
+		}
+		resolvedParam1 := pw.HandleResolve(param1)
+		resolvedParam2 := pw.HandleResolve(param2)
+		resolvedParam3 := pw.HandleResolve(param3)
+		resolvedParam4 := pw.HandleResolve(param4)
+		resolvedParam5 := pw.HandleResolve(param5)
+		fn, ok := funcValue.(func(string, string, string, string, string) interface{})
+		if !ok {
+			return nil, fmt.Errorf("%s is not a callable function with 5 parameters", functionName)
+		}
+		result := fn(
+			fmt.Sprintf("%v", resolvedParam1),
+			fmt.Sprintf("%v", resolvedParam2),
+			fmt.Sprintf("%v", resolvedParam3),
+			fmt.Sprintf("%v", resolvedParam4),
+			fmt.Sprintf("%v", resolvedParam5),
+		)
+		if err, ok := result.(error); ok {
+			return nil, err
+		}
+		return result, nil
+	})
+	return nil
+}
+
 func (pw *PropsWorld) iWaitForJob(jobName string) error {
 	err := pw.AsyncManager.WaitForTask(jobName, 30*time.Second)
 	if err != nil {
@@ -1170,6 +1238,7 @@ func (pw *PropsWorld) RegisterSteps(s *godog.ScenarioContext) {
 	s.Step(`^I call "([^"]*)" using arguments "([^"]*)" and "([^"]*)"$`, pw.iCallFunctionWithTwoParameters)
 	s.Step(`^I call "([^"]*)" using arguments "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iCallFunctionWithThreeParameters)
 	s.Step(`^I call "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iCallFunctionWithFourParameters)
+	s.Step(`^I call "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iCallFunctionWithFiveParameters)
 
 	// Function call — object methods
 	s.Step(`^I call "([^"]*)" with "([^"]*)"$`, pw.iCallObjectWithMethod)
@@ -1177,11 +1246,13 @@ func (pw *PropsWorld) RegisterSteps(s *godog.ScenarioContext) {
 	s.Step(`^I call "([^"]*)" with "([^"]*)" using arguments "([^"]*)" and "([^"]*)"$`, pw.iCallObjectWithMethodWithTwoParameters)
 	s.Step(`^I call "([^"]*)" with "([^"]*)" using arguments "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iCallObjectWithMethodWithThreeParameters)
 	s.Step(`^I call "([^"]*)" with "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iCallObjectWithMethodWithFourParameters)
+	s.Step(`^I call "([^"]*)" with "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iCallObjectWithMethodWithFiveParameters)
 	s.Step(`^I call "([^"]*)" with "([^"]*)" as "([^"]*)"$`, pw.iStartMethodJobNoParams)
 	s.Step(`^I call "([^"]*)" with "([^"]*)" using argument "([^"]*)" as "([^"]*)"$`, pw.iStartMethodJobWithParameter)
 	s.Step(`^I call "([^"]*)" with "([^"]*)" using arguments "([^"]*)" and "([^"]*)" as "([^"]*)"$`, pw.iStartMethodJobWithTwoParameters)
 	s.Step(`^I call "([^"]*)" with "([^"]*)" using arguments "([^"]*)", "([^"]*)", and "([^"]*)" as "([^"]*)"$`, pw.iStartMethodJobWithThreeParameters)
 	s.Step(`^I call "([^"]*)" with "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)" as "([^"]*)"$`, pw.iStartMethodJobWithFourParameters)
+	s.Step(`^I call "([^"]*)" with "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)" as "([^"]*)"$`, pw.iStartMethodJobWithFiveParameters)
 
 	// Variable management
 	s.Step(`^I refer to "([^"]*)" as "([^"]*)"$`, pw.IReferToAs)
@@ -1224,6 +1295,7 @@ func (pw *PropsWorld) RegisterSteps(s *godog.ScenarioContext) {
 	s.Step(`^I start "([^"]*)" using arguments "([^"]*)" and "([^"]*)" as "([^"]*)"$`, pw.iStartJobWithTwoParameters)
 	s.Step(`^I start "([^"]*)" using arguments "([^"]*)", "([^"]*)", and "([^"]*)" as "([^"]*)"$`, pw.iStartJobWithThreeParameters)
 	s.Step(`^I start "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)" as "([^"]*)"$`, pw.iStartJobWithFourParameters)
+	s.Step(`^I start "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)" as "([^"]*)"$`, pw.iStartJobWithFiveParameters)
 
 	// Async job — wait
 	s.Step(`^I wait for job "([^"]*)"$`, pw.iWaitForJob)
@@ -1236,4 +1308,5 @@ func (pw *PropsWorld) RegisterSteps(s *godog.ScenarioContext) {
 	s.Step(`^I wait for "([^"]*)" using arguments "([^"]*)" and "([^"]*)"$`, pw.iWaitForFunctionWithTwoParameters)
 	s.Step(`^I wait for "([^"]*)" using arguments "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iWaitForFunctionWithThreeParameters)
 	s.Step(`^I wait for "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iWaitForFunctionWithFourParameters)
+	s.Step(`^I wait for "([^"]*)" using arguments "([^"]*)", "([^"]*)", "([^"]*)", "([^"]*)", and "([^"]*)"$`, pw.iWaitForFunctionWithFiveParameters)
 }

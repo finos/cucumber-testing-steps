@@ -16,6 +16,8 @@ export function registerScenarioFixtures(world: PropsWorldLike): void {
     String(a) + String(b) + String(c);
   world.props['fourArgConcatFn'] = async (a: unknown, b: unknown, c: unknown, d: unknown) =>
     String(a) + String(b) + String(c) + String(d);
+  world.props['fiveArgConcatFn'] = async (a: unknown, b: unknown, c: unknown, d: unknown, e: unknown) =>
+    String(a) + String(b) + String(c) + String(d) + String(e);
 
   world.props['errorThrowingFn'] = (..._args: unknown[]) => {
     throw new Error('Test error message');
@@ -30,6 +32,9 @@ export function registerScenarioFixtures(world: PropsWorldLike): void {
     throw new Error('Test error message');
   };
   world.props['errorWith4ArgsFn'] = (_a: unknown, _b: unknown, _c: unknown, _d: unknown) => {
+    throw new Error('Test error message');
+  };
+  world.props['errorWith5ArgsFn'] = (_a: unknown, _b: unknown, _c: unknown, _d: unknown, _e: unknown) => {
     throw new Error('Test error message');
   };
 
@@ -49,6 +54,9 @@ export function registerScenarioFixtures(world: PropsWorldLike): void {
     },
     Sum4: function (a: number, b: number, c: number, d: number) {
       return a + b + c + d;
+    },
+    Sum5: function (a: number, b: number, c: number, d: number, e: number) {
+      return a + b + c + d + e;
     },
   };
 

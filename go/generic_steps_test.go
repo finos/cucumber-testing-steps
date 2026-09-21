@@ -33,6 +33,10 @@ func (calc *TestCalculator) Sum4(a, b, c, d float64) float64 {
 	return a + b + c + d
 }
 
+func (calc *TestCalculator) Sum5(a, b, c, d, e float64) float64 {
+	return a + b + c + d + e
+}
+
 func (calc *TestCalculator) FailingMethod() (float64, error) {
 	return 0, fmt.Errorf("method failed")
 }
@@ -52,6 +56,7 @@ func setupTestFixtures(world *generic.PropsWorld) {
 	world.Props["twoArgFn"] = func(a, b string) interface{} { return a + b }
 	world.Props["threeArgConcatFn"] = func(a, b, c string) interface{} { return a + b + c }
 	world.Props["fourArgConcatFn"] = func(a, b, c, d string) interface{} { return a + b + c + d }
+	world.Props["fiveArgConcatFn"] = func(a, b, c, d, e string) interface{} { return a + b + c + d + e }
 
 	// Error throwing function for error assertion tests (accepts any args via multiple signatures)
 	world.Props["errorThrowingFn"] = func() interface{} {
@@ -68,6 +73,9 @@ func setupTestFixtures(world *generic.PropsWorld) {
 		return fmt.Errorf("Test error message")
 	}
 	world.Props["errorWith4ArgsFn"] = func(a, b, c, d string) interface{} {
+		return fmt.Errorf("Test error message")
+	}
+	world.Props["errorWith5ArgsFn"] = func(a, b, c, d, e string) interface{} {
 		return fmt.Errorf("Test error message")
 	}
 

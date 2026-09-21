@@ -143,6 +143,38 @@ export function setupGenericSteps(bindings: StepRegistrarBindings) {
   );
 
   When(
+    'I call {string} with {string} using arguments {string}, {string}, {string}, {string}, and {string}',
+    wrapStep(
+      async (
+        world: PropsWorldLike,
+        field: string,
+        fnName: string,
+        param1: string,
+        param2: string,
+        param3: string,
+        param4: string,
+        param5: string
+      ) => {
+        try {
+          const object = handleResolve(field, world);
+          const fn = object[fnName];
+          const result = await fn.call(
+            object,
+            handleResolve(param1, world),
+            handleResolve(param2, world),
+            handleResolve(param3, world),
+            handleResolve(param4, world),
+            handleResolve(param5, world)
+          );
+          world.props['result'] = result;
+        } catch (error) {
+          world.props['result'] = error;
+        }
+      }
+    )
+  );
+
+  When(
     'I call {string} with {string} as {string}',
     wrapStep((world: PropsWorldLike, field: string, fnName: string, jobName: string) => {
       startMethodJob(world, jobName, field, fnName);
@@ -196,6 +228,25 @@ export function setupGenericSteps(bindings: StepRegistrarBindings) {
         jobName: string
       ) => {
         startMethodJob(world, jobName, field, fnName, [param1, param2, param3, param4]);
+      }
+    )
+  );
+
+  When(
+    'I call {string} with {string} using arguments {string}, {string}, {string}, {string}, and {string} as {string}',
+    wrapStep(
+      (
+        world: PropsWorldLike,
+        field: string,
+        fnName: string,
+        param1: string,
+        param2: string,
+        param3: string,
+        param4: string,
+        param5: string,
+        jobName: string
+      ) => {
+        startMethodJob(world, jobName, field, fnName, [param1, param2, param3, param4, param5]);
       }
     )
   );
@@ -271,6 +322,35 @@ export function setupGenericSteps(bindings: StepRegistrarBindings) {
         world.props['result'] = error;
       }
     })
+  );
+
+  When(
+    'I call {string} using arguments {string}, {string}, {string}, {string}, and {string}',
+    wrapStep(
+      async (
+        world: PropsWorldLike,
+        fnName: string,
+        param1: string,
+        param2: string,
+        param3: string,
+        param4: string,
+        param5: string
+      ) => {
+        try {
+          const fn = handleResolve(fnName, world);
+          const result = await fn(
+            handleResolve(param1, world),
+            handleResolve(param2, world),
+            handleResolve(param3, world),
+            handleResolve(param4, world),
+            handleResolve(param5, world)
+          );
+          world.props['result'] = result;
+        } catch (error) {
+          world.props['result'] = error;
+        }
+      }
+    )
   );
 
   // ========== Variable Reference ==========
@@ -508,6 +588,32 @@ export function setupGenericSteps(bindings: StepRegistrarBindings) {
     })
   );
 
+  When(
+    'I start {string} using arguments {string}, {string}, {string}, {string}, and {string} as {string}',
+    wrapStep(
+      async (
+        world: PropsWorldLike,
+        fnName: string,
+        param1: string,
+        param2: string,
+        param3: string,
+        param4: string,
+        param5: string,
+        jobName: string
+      ) => {
+        const jobs: Map<string, Promise<any>> = world.props['_jobs'] ?? new Map();
+        world.props['_jobs'] = jobs;
+        const fn = handleResolve(fnName, world);
+        const p1 = handleResolve(param1, world);
+        const p2 = handleResolve(param2, world);
+        const p3 = handleResolve(param3, world);
+        const p4 = handleResolve(param4, world);
+        const p5 = handleResolve(param5, world);
+        jobs.set(jobName, Promise.resolve().then(() => fn(p1, p2, p3, p4, p5)));
+      }
+    )
+  );
+
   Then(
     'I wait for job {string}',
     wrapStep(async (world: PropsWorldLike, jobName: string) => {
@@ -625,5 +731,34 @@ export function setupGenericSteps(bindings: StepRegistrarBindings) {
         world.props['result'] = error;
       }
     })
+  );
+
+  When(
+    'I wait for {string} using arguments {string}, {string}, {string}, {string}, and {string}',
+    wrapStep(
+      async (
+        world: PropsWorldLike,
+        fnName: string,
+        param1: string,
+        param2: string,
+        param3: string,
+        param4: string,
+        param5: string
+      ) => {
+        const fn = handleResolve(fnName, world);
+        try {
+          const result = await fn(
+            handleResolve(param1, world),
+            handleResolve(param2, world),
+            handleResolve(param3, world),
+            handleResolve(param4, world),
+            handleResolve(param5, world)
+          );
+          world.props['result'] = result;
+        } catch (error) {
+          world.props['result'] = error;
+        }
+      }
+    )
   );
 }

@@ -104,6 +104,26 @@ public class GenericSteps
         }
     }
 
+    [When("I call {string} with {string} using arguments {string}, {string}, {string}, {string}, and {string}")]
+    public async Task ICallWithFiveParameters(string field, string methodName, string param1, string param2, string param3, string param4, string param5)
+    {
+        try
+        {
+            var obj = MatchingUtils.HandleResolve(field, _world);
+            var result = await InvokeMethod(obj!, methodName,
+                MatchingUtils.HandleResolve(param1, _world),
+                MatchingUtils.HandleResolve(param2, _world),
+                MatchingUtils.HandleResolve(param3, _world),
+                MatchingUtils.HandleResolve(param4, _world),
+                MatchingUtils.HandleResolve(param5, _world));
+            _world.Set("result", result);
+        }
+        catch (Exception e)
+        {
+            _world.Set("result", e);
+        }
+    }
+
     [When("I call {string} with {string} as {string}")]
     public void StartMethodJob(string field, string methodName, string jobName)
     {
@@ -142,6 +162,17 @@ public class GenericSteps
             MatchingUtils.HandleResolve(param2, _world),
             MatchingUtils.HandleResolve(param3, _world),
             MatchingUtils.HandleResolve(param4, _world));
+    }
+
+    [When("I call {string} with {string} using arguments {string}, {string}, {string}, {string}, and {string} as {string}")]
+    public void StartMethodJobWithFiveParameters(string field, string methodName, string param1, string param2, string param3, string param4, string param5, string jobName)
+    {
+        StartMethodJobWithArgs(field, methodName, jobName,
+            MatchingUtils.HandleResolve(param1, _world),
+            MatchingUtils.HandleResolve(param2, _world),
+            MatchingUtils.HandleResolve(param3, _world),
+            MatchingUtils.HandleResolve(param4, _world),
+            MatchingUtils.HandleResolve(param5, _world));
     }
 
     private void StartMethodJobWithArgs(string field, string methodName, string jobName, params object?[] args)
@@ -233,6 +264,26 @@ public class GenericSteps
                 MatchingUtils.HandleResolve(param2, _world),
                 MatchingUtils.HandleResolve(param3, _world),
                 MatchingUtils.HandleResolve(param4, _world));
+            _world.Set("result", result);
+        }
+        catch (Exception e)
+        {
+            _world.Set("result", e);
+        }
+    }
+
+    [When("I call {string} using arguments {string}, {string}, {string}, {string}, and {string}")]
+    public async Task ICallFunctionWithFiveParameters(string fnName, string param1, string param2, string param3, string param4, string param5)
+    {
+        try
+        {
+            var fn = MatchingUtils.HandleResolve(fnName, _world);
+            var result = await CallFunctionalWithArgs(fn,
+                MatchingUtils.HandleResolve(param1, _world),
+                MatchingUtils.HandleResolve(param2, _world),
+                MatchingUtils.HandleResolve(param3, _world),
+                MatchingUtils.HandleResolve(param4, _world),
+                MatchingUtils.HandleResolve(param5, _world));
             _world.Set("result", result);
         }
         catch (Exception e)
@@ -531,6 +582,26 @@ public class GenericSteps
         }
     }
 
+    [When("I wait for {string} using arguments {string}, {string}, {string}, {string}, and {string}")]
+    public async Task IWaitForWithFiveParams(string fnName, string param1, string param2, string param3, string param4, string param5)
+    {
+        try
+        {
+            var fn = MatchingUtils.HandleResolve(fnName, _world);
+            var result = await CallFunctionalWithArgs(fn,
+                MatchingUtils.HandleResolve(param1, _world),
+                MatchingUtils.HandleResolve(param2, _world),
+                MatchingUtils.HandleResolve(param3, _world),
+                MatchingUtils.HandleResolve(param4, _world),
+                MatchingUtils.HandleResolve(param5, _world));
+            _world.Set("result", result);
+        }
+        catch (Exception e)
+        {
+            _world.Set("result", e);
+        }
+    }
+
     // ========== Background Job Steps ==========
 
     [When("I start {string} as {string}")]
@@ -580,6 +651,19 @@ public class GenericSteps
             MatchingUtils.HandleResolve(param2, _world),
             MatchingUtils.HandleResolve(param3, _world),
             MatchingUtils.HandleResolve(param4, _world)));
+        _world.Tasks[jobName] = task;
+    }
+
+    [When("I start {string} using arguments {string}, {string}, {string}, {string}, and {string} as {string}")]
+    public void StartJobWithFiveArgs(string fnName, string param1, string param2, string param3, string param4, string param5, string jobName)
+    {
+        var fn = MatchingUtils.HandleResolve(fnName, _world);
+        var task = Task.Run(async () => await CallFunctionalWithArgs(fn,
+            MatchingUtils.HandleResolve(param1, _world),
+            MatchingUtils.HandleResolve(param2, _world),
+            MatchingUtils.HandleResolve(param3, _world),
+            MatchingUtils.HandleResolve(param4, _world),
+            MatchingUtils.HandleResolve(param5, _world)));
         _world.Tasks[jobName] = task;
     }
 

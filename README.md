@@ -258,16 +258,19 @@ Any `{...}` reference containing a dot or bracket is resolved as a path into the
 | `When I call "{fn}" using arguments "{p1}" and "{p2}"` | Call with two arguments |
 | `When I call "{fn}" using arguments "{p1}", "{p2}", and "{p3}"` | Call with three arguments |
 | `When I call "{fn}" using arguments "{p1}", "{p2}", "{p3}", and "{p4}"` | Call with four arguments |
+| `When I call "{fn}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}"` | Call with five arguments |
 | `When I call "{obj}" with "{method}"` | Call a method on an object |
 | `When I call "{obj}" with "{method}" using argument "{p1}"` | Call method with one argument |
 | `When I call "{obj}" with "{method}" using arguments "{p1}" and "{p2}"` | Call method with two arguments |
 | `When I call "{obj}" with "{method}" using arguments "{p1}", "{p2}", and "{p3}"` | Call method with three arguments |
 | `When I call "{obj}" with "{method}" using arguments "{p1}", "{p2}", "{p3}", and "{p4}"` | Call method with four arguments |
+| `When I call "{obj}" with "{method}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}"` | Call method with five arguments |
 | `When I call "{obj}" with "{method}" as "jobName"` | Start method call as background job |
 | `When I call "{obj}" with "{method}" using argument "{p1}" as "jobName"` | Start method job with one arg |
 | `When I call "{obj}" with "{method}" using arguments "{p1}" and "{p2}" as "jobName"` | Start method job with two args |
 | `When I call "{obj}" with "{method}" using arguments "{p1}", "{p2}", and "{p3}" as "jobName"` | Start method job with three args |
 | `When I call "{obj}" with "{method}" using arguments "{p1}", "{p2}", "{p3}", and "{p4}" as "jobName"` | Start method job with four args |
+| `When I call "{obj}" with "{method}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}" as "jobName"` | Start method job with five args |
 
 ### [Async Steps](docs/async.md)
 
@@ -279,11 +282,13 @@ Any `{...}` reference containing a dot or bracket is resolved as a path into the
 | `When I wait for "{fn}" using arguments "{p1}" and "{p2}"` | Call with two args and await |
 | `When I wait for "{fn}" using arguments "{p1}", "{p2}", and "{p3}"` | Call with three args and await |
 | `When I wait for "{fn}" using arguments "{p1}", "{p2}", "{p3}", and "{p4}"` | Call with four args and await |
+| `When I wait for "{fn}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}"` | Call with five args and await |
 | `When I start "{fn}" as "jobName"` | Start async job in background |
 | `When I start "{fn}" using argument "{p1}" as "jobName"` | Start job with one arg |
 | `When I start "{fn}" using arguments "{p1}" and "{p2}" as "jobName"` | Start job with two args |
 | `When I start "{fn}" using arguments "{p1}", "{p2}", and "{p3}" as "jobName"` | Start job with three args |
 | `When I start "{fn}" using arguments "{p1}", "{p2}", "{p3}", and "{p4}" as "jobName"` | Start job with four args |
+| `When I start "{fn}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}" as "jobName"` | Start job with five args |
 | `When I wait for job "jobName"` | Wait for named job (30s timeout) |
 | `When I wait for job "jobName" within "{ms}" ms` | Wait with custom timeout |
 

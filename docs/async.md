@@ -76,6 +76,10 @@ Then "{result}" is not an error
 
 ---
 
+## `I wait for "{fn}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}"`
+
+---
+
 ## `I start "{fn}" as "jobName"` — start a background job
 
 Starts `{fn}` asynchronously in the background and registers it under `jobName`. The scenario continues without blocking.
@@ -104,6 +108,10 @@ Then "{count}" is "1"
 
 ---
 
+## `I start "{fn}" using arguments "{p1}", "{p2}", "{p3}", "{p4}", and "{p5}" as "jobName"`
+
+---
+
 ## Method calls as background jobs
 
 Same job/wait pattern for `I call "{obj}" with "{method}"` — the method return value is stored in `result` when the job completes.
@@ -114,7 +122,7 @@ And I wait for job "getValueJob"
 Then "{result}" is "42"
 ```
 
-Variants with one to four arguments mirror the synchronous method-call steps, with `as "jobName"` at the end.
+Variants with one to five arguments mirror the synchronous method-call steps, with `as "jobName"` at the end.
 
 ---
 

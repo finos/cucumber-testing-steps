@@ -45,6 +45,11 @@ Feature: Async operations
     Given I set "fourArgFn" to "{fourArgConcatFn}"
     When I wait for "{fourArgFn}" using arguments "1", "2", "3", and "4"
     Then "{result}" is "1234"
+
+  Scenario: Wait for function with five arguments
+    Given I set "fiveArgFn" to "{fiveArgConcatFn}"
+    When I wait for "{fiveArgFn}" using arguments "1", "2", "3", "4", and "5"
+    Then "{result}" is "12345"
   # Background jobs
 
   Scenario: Run in background and wait later
@@ -83,6 +88,12 @@ Feature: Async operations
     When I start "{fourArgFn}" using arguments "P", "Q", "R", and "S" as "fourArgJob"
     And I wait for job "fourArgJob"
     Then "{result}" is "PQRS"
+
+  Scenario: Start job with five arguments
+    Given I set "fiveArgFn" to "{fiveArgConcatFn}"
+    When I start "{fiveArgFn}" using arguments "V", "W", "X", "Y", and "Z" as "fiveArgJob"
+    And I wait for job "fiveArgJob"
+    Then "{result}" is "VWXYZ"
   # Method calls as background jobs
 
   Scenario: Start method call as background job with no arguments
@@ -114,6 +125,12 @@ Feature: Async operations
     When I call "{calculator}" with "Sum4" using arguments "{1}", "{2}", "{3}", and "{4}" as "sum4Job"
     And I wait for job "sum4Job"
     Then "{result}" is "10"
+
+  Scenario: Start method call as background job with five arguments
+    Given I set "calculator" to "{testCalculator}"
+    When I call "{calculator}" with "Sum5" using arguments "{1}", "{2}", "{3}", "{4}", and "{5}" as "sum5Job"
+    And I wait for job "sum5Job"
+    Then "{result}" is "15"
   # Wait for a period
 
   Scenario: Wait for a period does not advance counter
